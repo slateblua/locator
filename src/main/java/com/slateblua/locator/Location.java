@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 @NoArgsConstructor
-public class Location {
+public class Location implements Trackable {
 
     /**
      * The latitude of the location in decimal degrees.

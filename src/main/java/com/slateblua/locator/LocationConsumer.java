@@ -19,7 +19,7 @@ public class LocationConsumer {
     private static final int DATA_POINTS_THRESHOLD = 10;
 
     private final ObjectMapper objectMapper;
-    private final List<Location> userLocations = new ArrayList<>();
+    private final List<Trackable> userLocations = new ArrayList<>();
 
     /**
      * Consumes location data from the Kafka topic and adds it to the list of locations.
@@ -47,28 +47,9 @@ public class LocationConsumer {
      *
      * @param locations The list of locations to process.
      */
-    private void generateReport (final List<Location> locations) {
-        double totalDistance = calculateTotalDistance(locations);
+    private void generateReport (final List<Trackable> locations) {
+        double totalDistance = MathFormulas.calculateTotalDistance(locations);
         System.out.println("Report generated: Total locations processed: " + locations.size() +
                 ", Total traveled distance: " + totalDistance + " km");
-    }
-
-    /**
-     * Calculates the total distance between consecutive locations using the Haversine formula.
-     *
-     * @param locations The list of locations to calculate the distance for.
-     * @return The total distance traveled in kilometers.
-     */
-    private double calculateTotalDistance (List<Location> locations) {
-        double totalDistance = 0;
-        for (int i = 1; i < locations.size(); i++) {
-            final Location prev = locations.get(i - 1);
-            final Location curr = locations.get(i);
-            totalDistance += MathFormulas.haversineDistance(
-                    prev.getLatitude(), prev.getLongitude(),
-                    curr.getLatitude(), curr.getLongitude()
-            );
-        }
-        return totalDistance;
     }
 }

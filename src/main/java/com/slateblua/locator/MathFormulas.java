@@ -1,5 +1,7 @@
 package com.slateblua.locator;
 
+import java.util.List;
+
 public class MathFormulas {
     private static final int EARTH_RADIUS = 6371;
 
@@ -15,5 +17,25 @@ public class MathFormulas {
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
         return EARTH_RADIUS * c;
+    }
+
+
+    /**
+     * Calculates the total distance between consecutive locations using the Haversine formula.
+     *
+     * @param locations The list of locations to calculate the distance for.
+     * @return The total distance traveled in kilometers.
+     */
+    public static double calculateTotalDistance (List<Trackable> locations) {
+        double totalDistance = 0;
+        for (int i = 1; i < locations.size(); i++) {
+            final Trackable prev = locations.get(i - 1);
+            final Trackable curr = locations.get(i);
+            totalDistance += MathFormulas.haversineDistance(
+                    prev.getLatitude(), prev.getLongitude(),
+                    curr.getLatitude(), curr.getLongitude()
+            );
+        }
+        return totalDistance;
     }
 }
