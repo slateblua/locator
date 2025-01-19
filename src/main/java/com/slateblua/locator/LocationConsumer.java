@@ -9,6 +9,10 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Consumer service for location data received through Kafka.
+ * Processes location messages and generates distance reports.
+ */
 @Service
 @RequiredArgsConstructor
 public class LocationConsumer {
@@ -17,6 +21,12 @@ public class LocationConsumer {
     private final ObjectMapper objectMapper;
     private final List<Location> userLocations = new ArrayList<>();
 
+    /**
+     * Consumes location data from the Kafka topic and adds it to the list of locations.
+     * Generates a report after processing a predefined number of data points.
+     *
+     * @param message The JSON message containing location data.
+     */
     @KafkaListener(topics = "${kafka.topic.locations}", groupId = "${spring.kafka.consumer.group-id}")
     public void consume (String message) {
         try {
@@ -32,12 +42,23 @@ public class LocationConsumer {
         }
     }
 
+    /**
+     * Generates a report of the total distance traveled and the number of locations processed.
+     *
+     * @param locations The list of locations to process.
+     */
     private void generateReport (final List<Location> locations) {
         double totalDistance = calculateTotalDistance(locations);
         System.out.println("Report generated: Total locations processed: " + locations.size() +
                 ", Total traveled distance: " + totalDistance + " km");
     }
 
+    /**
+     * Calculates the total distance between consecutive locations using the Haversine formula.
+     *
+     * @param locations The list of locations to calculate the distance for.
+     * @return The total distance traveled in kilometers.
+     */
     private double calculateTotalDistance (List<Location> locations) {
         double totalDistance = 0;
         for (int i = 1; i < locations.size(); i++) {
